@@ -1,0 +1,24 @@
+.o_medical_clinic_dashboard {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.o_medical_clinic_dashboard .card {
+    border: none;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.o_medical_clinic_dashboard .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+.o_medical_clinic_dashboard .card h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.o_medical_clinic_dashboard .display-4 {
+    font-weight: 600;
+}

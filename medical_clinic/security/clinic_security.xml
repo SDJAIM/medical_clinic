@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Categories -->
+    <record id="module_category_medical_clinic" model="ir.module.category">
+        <field name="name">Medical Clinic</field>
+        <field name="description">Medical and Dental Clinic Management</field>
+        <field name="sequence">10</field>
+    </record>
+    
+    <!-- Groups -->
+    <record id="group_clinic_receptionist" model="res.groups">
+        <field name="name">Receptionist</field>
+        <field name="category_id" ref="module_category_medical_clinic"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    
+    <record id="group_clinic_nurse" model="res.groups">
+        <field name="name">Nurse</field>
+        <field name="category_id" ref="module_category_medical_clinic"/>
+        <field name="implied_ids" eval="[(4, ref('group_clinic_receptionist'))]"/>
+    </record>
+    
+    <record id="group_clinic_doctor" model="res.groups">
+        <field name="name">Doctor</field>
+        <field name="category_id" ref="module_category_medical_clinic"/>
+        <field name="implied_ids" eval="[(4, ref('group_clinic_nurse'))]"/>
+    </record>
+    
+    <record id="group_clinic_dentist" model="res.groups">
+        <field name="name">Dentist</field>
+        <field name="category_id" ref="module_category_medical_clinic"/>
+        <field name="implied_ids" eval="[(4, ref('group_clinic_nurse'))]"/>
+    </record>
+    
+    <record id="group_clinic_billing" model="res.groups">
+        <field name="name">Billing Staff</field>
+        <field name="category_id" ref="module_category_medical_clinic"/>
+        <field name="implied_ids" eval="[(4, ref('group_clinic_receptionist'))]"/>
+    </record>
+    
+    <record id="group_clinic_manager" model="res.groups">
+        <field name="name">Clinic Manager</field>
+        <field name="category_id" ref="module_category_medical_clinic"/>
+        <field name="implied_ids" eval="[(4, ref('group_clinic_doctor')), (4, ref('group_clinic_dentist')), (4, ref('group_clinic_billing'))]"/>
+    </record>
+    
+    <!-- Record Rules for Multi-Company -->
+    <record id="clinic_patient_company_rule" model="ir.rule">
+        <field name="name">Patient: Multi-Company</field>
+        <field name="model_id" ref="model_clinic_patient"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    
+    <record id="clinic_appointment_company_rule" model="ir.rule">
+        <field name="name">Appointment: Multi-Company</field>
+        <field name="model_id" ref="model_clinic_appointment"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+    
+    <record id="clinic_treatment_company_rule" model="ir.rule">
+        <field name="name">Treatment: Multi-Company</field>
+        <field name="model_id" ref="model_clinic_treatment"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]</field>
+    </record>
+</odoo>

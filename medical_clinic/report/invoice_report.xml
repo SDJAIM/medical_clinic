@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Medical Invoice Report inheriting from account.move -->
+    <template id="report_invoice_document_inherit" inherit_id="account.report_invoice_document">
+        <xpath expr="//div[@name='invoice_address']" position="after">
+            <t t-if="o.patient_id">
+                <div class="col-auto col-3 mw-100 mb-2">
+                    <strong>Patient:</strong>
+                    <p class="m-0" t-field="o.patient_id.full_name"/>
+                    <p class="m-0">DOB: <span t-field="o.patient_id.date_of_birth"/></p>
+                </div>
+            </t>
+            <t t-if="o.treatment_id">
+                <div class="col-auto col-3 mw-100 mb-2">
+                    <strong>Treatment:</strong>
+                    <p class="m-0" t-field="o.treatment_id.treatment_code"/>
+                    <p class="m-0">Date: <span t-field="o.treatment_id.date" t-options='{"widget": "date"}'/></p>
+                </div>
+            </t>
+        </xpath>
+        
+        <xpath expr="//table[@name='invoice_line_table']" position="after">
+            <t t-if="o.insurance_claim_ids">
+                <div class="mt-4">
+                    <h5>Insurance Claims</h5>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Insurance</th>
+                                <th>Claim #</th>
+                                <th>Status</th>
+                                <th class="text-end">Claimed</th>
+                                <th class="text-end">Approved</th>
+                                <th class="text-end">Patient Responsibility</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="o.insurance_claim_ids" t-as="claim">
+                                <tr>
+                                    <td><span t-field="claim.insurance_id.insurance_company_id.name"/></td>
+                                    <td><span t-field="claim.claim_number"/></td>
+                                    <td><span t-field="claim.state"/></td>
+                                    <td class="text-end"><span t-field="claim.amount_claimed"/></td>
+                                    <td class="text-end"><span t-field="claim.amount_approved"/></td>
+                                    <td class="text-end"><span t-field="claim.patient_responsibility"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

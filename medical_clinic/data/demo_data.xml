@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Demo Insurance Companies -->
+    <record id="demo_insurance_company_1" model="res.partner">
+        <field name="name">Blue Cross Health Insurance</field>
+        <field name="is_company" eval="True"/>
+        <field name="is_insurance_company" eval="True"/>
+        <field name="street">123 Insurance Ave</field>
+        <field name="city">New York</field>
+        <field name="zip">10001</field>
+        <field name="phone">+1 555-0100</field>
+    </record>
+    
+    <record id="demo_insurance_company_2" model="res.partner">
+        <field name="name">United Healthcare</field>
+        <field name="is_company" eval="True"/>
+        <field name="is_insurance_company" eval="True"/>
+        <field name="street">456 Coverage Blvd</field>
+        <field name="city">Chicago</field>
+        <field name="zip">60601</field>
+        <field name="phone">+1 555-0200</field>
+    </record>
+    
+    <!-- Demo Medical Professionals -->
+    <record id="demo_doctor_1" model="hr.employee">
+        <field name="name">Dr. Sarah Johnson</field>
+        <field name="is_medical_professional" eval="True"/>
+        <field name="medical_specialization">general</field>
+        <field name="license_number">MD123456</field>
+        <field name="work_email">sarah.johnson@clinic.com</field>
+        <field name="work_phone">+1 555-1001</field>
+    </record>
+    
+    <record id="demo_doctor_2" model="hr.employee">
+        <field name="name">Dr. Michael Chen</field>
+        <field name="is_medical_professional" eval="True"/>
+        <field name="medical_specialization">cardiologist</field>
+        <field name="license_number">MD234567</field>
+        <field name="work_email">michael.chen@clinic.com</field>
+        <field name="work_phone">+1 555-1002</field>
+    </record>
+    
+    <record id="demo_dentist_1" model="hr.employee">
+        <field name="name">Dr. Emily Rodriguez</field>
+        <field name="is_medical_professional" eval="True"/>
+        <field name="medical_specialization">dentist</field>
+        <field name="license_number">DDS345678</field>
+        <field name="work_email">emily.rodriguez@clinic.com</field>
+        <field name="work_phone">+1 555-1003</field>
+    </record>
+    
+    <!-- Demo Patients -->
+    <record id="demo_patient_1" model="clinic.patient">
+        <field name="first_name">John</field>
+        <field name="last_name">Smith</field>
+        <field name="date_of_birth">1985-05-15</field>
+        <field name="gender">male</field>
+        <field name="blood_group">O+</field>
+        <field name="phone">+1 555-2001</field>
+        <field name="email">john.smith@email.com</field>
+        <field name="street">789 Main St</field>
+        <field name="city">Boston</field>
+        <field name="zip">02101</field>
+        <field name="emergency_contact">Jane Smith</field>
+        <field name="emergency_phone">+1 555-2002</field>
+        <field name="emergency_relation">Spouse</field>
+        <field name="allergies">Penicillin, Peanuts</field>
+        <field name="chronic_conditions">Hypertension</field>
+        <field name="current_medications">Lisinopril 10mg daily</field>
+    </record>
+    
+    <record id="demo_patient_2" model="clinic.patient">
+        <field name="first_name">Maria</field>
+        <field name="last_name">Garcia</field>
+        <field name="date_of_birth">1992-09-22</field>
+        <field name="gender">female</field>
+        <field name="blood_group">A+</field>
+        <field name="phone">+1 555-2003</field>
+        <field name="email">maria.garcia@email.com</field>
+        <field name="street">321 Oak Ave</field>
+        <field name="city">Los Angeles</field>
+        <field name="zip">90001</field>
+        <field name="emergency_contact">Carlos Garcia</field>
+        <field name="emergency_phone">+1 555-2004</field>
+        <field name="emergency_relation">Brother</field>
+        <field name="allergies">None</field>
+        <field name="chronic_conditions">Asthma</field>
+        <field name="current_medications">Albuterol inhaler as needed</field>
+    </record>
+    
+    <record id="demo_patient_3" model="clinic.patient">
+        <field name="first_name">Robert</field>
+        <field name="last_name">Johnson</field>
+        <field name="date_of_birth">1978-03-10</field>
+        <field name="gender">male</field>
+        <field name="blood_group">B+</field>
+        <field name="phone">+1 555-2005</field>
+        <field name="email">robert.johnson@email.com</field>
+        <field name="street">555 Pine St</field>
+        <field name="city">Miami</field>
+        <field name="zip">33101</field>
+        <field name="emergency_contact">Lisa Johnson</field>
+        <field name="emergency_phone">+1 555-2006</field>
+        <field name="emergency_relation">Sister</field>
+        <field name="allergies">Sulfa drugs</field>
+        <field name="chronic_conditions">Type 2 Diabetes</field>
+        <field name="current_medications">Metformin 1000mg twice daily</field>
+    </record>
+    
+    <!-- Demo Insurance Plans -->
+    <record id="demo_insurance_1" model="clinic.insurance">
+        <field name="patient_id" ref="demo_patient_1"/>
+        <field name="insurance_company_id" ref="demo_insurance_company_1"/>
+        <field name="policy_number">BC123456789</field>
+        <field name="group_number">GRP001</field>
+        <field name="plan_name">Premium PPO</field>
+        <field name="plan_type">ppo</field>
+        <field name="start_date" eval="(datetime.datetime.now() - relativedelta(years=1)).strftime('%Y-%m-%d')"/>
+        <field name="coverage_percentage">80.0</field>
+        <field name="deductible">1000.00</field>
+        <field name="deductible_met">500.00</field>
+        <field name="max_coverage">50000.00</field>
+        <field name="copay_amount">25.00</field>
+        <field name="is_primary" eval="True"/>
+    </record>
+    
+    <record id="demo_insurance_2" model="clinic.insurance">
+        <field name="patient_id" ref="demo_patient_2"/>
+        <field name="insurance_company_id" ref="demo_insurance_company_2"/>
+        <field name="policy_number">UH987654321</field>
+        <field name="plan_name">Standard HMO</field>
+        <field name="plan_type">hmo</field>
+        <field name="start_date" eval="(datetime.datetime.now() - relativedelta(months=6)).strftime('%Y-%m-%d')"/>
+        <field name="coverage_percentage">90.0</field>
+        <field name="deductible">500.00</field>
+        <field name="deductible_met">0.00</field>
+        <field name="max_coverage">25000.00</field>
+        <field name="copay_amount">15.00</field>
+        <field name="is_primary" eval="True"/>
+    </record>
+    
+    <!-- Demo Appointments -->
+    <record id="demo_appointment_1" model="clinic.appointment">
+        <field name="patient_id" ref="demo_patient_1"/>
+        <field name="doctor_id" ref="demo_doctor_1"/>
+        <field name="date" eval="(datetime.datetime.now() + relativedelta(days=1, hour=10)).strftime('%Y-%m-%d %H:00:00')"/>
+        <field name="duration">0.5</field>
+        <field name="appointment_type">consultation</field>
+        <field name="department">general</field>
+        <field name="chief_complaint">Annual checkup and blood pressure monitoring</field>
+        <field name="state">confirmed</field>
+    </record>
+    
+    <record id="demo_appointment_2" model="clinic.appointment">
+        <field name="patient_id" ref="demo_patient_2"/>
+        <field name="doctor_id" ref="demo_dentist_1"/>
+        <field name="date" eval="(datetime.datetime.now() + relativedelta(days=2, hour=14)).strftime('%Y-%m-%d %H:00:00')"/>
+        <field name="duration">1.0</field>
+        <field name="appointment_type">dental</field>
+        <field name="department">dental</field>
+        <field name="chief_complaint">Dental cleaning and examination</field>
+        <field name="state">draft</field>
+    </record>
+    
+    <record id="demo_appointment_3" model="clinic.appointment">
+        <field name="patient_id" ref="demo_patient_3"/>
+        <field name="doctor_id" ref="demo_doctor_2"/>
+        <field name="date" eval="(datetime.datetime.now() + relativedelta(days=3, hour=11)).strftime('%Y-%m-%d %H:00:00')"/>
+        <field name="duration">1.0</field>
+        <field name="appointment_type">follow_up</field>
+        <field name="department">cardiology</field>
+        <field name="chief_complaint">Follow-up for cardiac evaluation</field>
+        <field name="state">draft</field>
+    </record>
+    
+    <!-- Create Dental Charts -->
+    <function model="clinic.dental.chart" name="create">
+        <value model="clinic.dental.chart" eval="{'patient_id': ref('demo_patient_1')}"/>
+    </function>
+    
+    <function model="clinic.dental.chart" name="create">
+        <value model="clinic.dental.chart" eval="{'patient_id': ref('demo_patient_2')}"/>
+    </function>
+</odoo>

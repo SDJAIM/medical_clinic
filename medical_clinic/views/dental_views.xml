@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dental Chart Tree View -->
+    <record id="view_clinic_dental_chart_tree" model="ir.ui.view">
+        <field name="name">clinic.dental.chart.tree</field>
+        <field name="model">clinic.dental.chart</field>
+        <field name="arch" type="xml">
+            <tree string="Dental Charts">
+                <field name="patient_id"/>
+                <field name="last_update"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </tree>
+        </field>
+    </record>
+    
+    <!-- Dental Chart Form View -->
+    <record id="view_clinic_dental_chart_form" model="ir.ui.view">
+        <field name="name">clinic.dental.chart.form</field>
+        <field name="model">clinic.dental.chart</field>
+        <field name="arch" type="xml">
+            <form string="Dental Chart">
+                <sheet>
+                    <group>
+                        <field name="patient_id" readonly="1"/>
+                        <field name="last_update" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Dental Chart">
+                            <div class="alert alert-info" role="alert">
+                                <i class="fa fa-info-circle"/> Click on a tooth to view/edit its details and procedures
+                            </div>
+                            <field name="tooth_ids" mode="tree">
+                                <tree create="false" delete="false">
+                                    <field name="display_name"/>
+                                    <field name="status" widget="badge" 
+                                           decoration-success="status == 'healthy'"
+                                           decoration-warning="status in ('cavity', 'filled')"
+                                           decoration-danger="status == 'extracted'"/>
+                                    <field name="notes"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Dental Tooth Form View -->
+    <record id="view_clinic_dental_tooth_form" model="ir.ui.view">
+        <field name="name">clinic.dental.tooth.form</field>
+        <field name="model">clinic.dental.tooth</field>
+        <field name="arch" type="xml">
+            <form string="Tooth Details">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="display_name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="status"/>
+                        </group>
+                        <group>
+                            <label for="mesial" string="Affected Surfaces"/>
+                            <div>
+                                <field name="mesial" widget="boolean_toggle" class="me-2"/> Mesial
+                                <field name="distal" widget="boolean_toggle" class="me-2 ms-3"/> Distal
+                                <field name="occlusal" widget="boolean_toggle" class="me-2 ms-3"/> Occlusal
+                                <field name="buccal" widget="boolean_toggle" class="me-2 ms-3"/> Buccal
+                                <field name="lingual" widget="boolean_toggle" class="ms-3"/> Lingual
+                            </div>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Additional notes about this tooth..."/>
+                    </group>
+                    <separator string="Procedure History"/>
+                    <field name="procedure_ids">
+                        <tree>
+                            <field name="date"/>
+                            <field name="procedure_type"/>
+                            <field name="description"/>
+                            <field name="doctor_id"/>
+                        </tree>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Dental Procedure Form View -->
+    <record id="view_clinic_dental_procedure_form" model="ir.ui.view">
+        <field name="name">clinic.dental.procedure.form</field>
+        <field name="model">clinic.dental.procedure</field>
+        <field name="arch" type="xml">
+            <form string="Dental Procedure">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="tooth_id" readonly="1"/>
+                            <field name="treatment_id" domain="[('patient_id', '=', parent.chart_id.patient_id)]"/>
+                            <field name="date"/>
+                            <field name="doctor_id" domain="[('is_medical_professional', '=', True)]"/>
+                        </group>
+                        <group>
+                            <field name="procedure_type"/>
+                            <field name="service_id" domain="[('department', '=', 'dental')]"/>
+                            <field name="surfaces"/>
+                        </group>
+                    </group>
+                    <separator string="Description"/>
+                    <field name="description"/>
+                    <separator string="Notes"/>
+                    <field name="notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    
+    <!-- Actions -->
+    <record id="action_clinic_dental_chart" model="ir.actions.act_window">
+        <field name="name">Dental Charts</field>
+        <field name="res_model">clinic.dental.chart</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a dental chart
+            </p>
+            <p>
+                Manage dental charts and track tooth-specific procedures.
+            </p>
+        </field>
+    </record>
+</odoo>

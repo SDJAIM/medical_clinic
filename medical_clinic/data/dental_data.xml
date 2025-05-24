@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dental Procedure Types -->
+    <record id="dental_service_cleaning" model="clinic.service">
+        <field name="name">Dental Cleaning</field>
+        <field name="code">DENT-001</field>
+        <field name="department">dental</field>
+        <field name="price">150.00</field>
+        <field name="duration">0.5</field>
+        <field name="is_procedure" eval="True"/>
+        <field name="product_id" ref="product.service_order_01"/>
+    </record>
+    
+    <record id="dental_service_filling" model="clinic.service">
+        <field name="name">Dental Filling</field>
+        <field name="code">DENT-002</field>
+        <field name="department">dental</field>
+        <field name="price">250.00</field>
+        <field name="duration">1.0</field>
+        <field name="is_procedure" eval="True"/>
+        <field name="product_id" ref="product.service_order_01"/>
+    </record>
+    
+    <record id="dental_service_extraction" model="clinic.service">
+        <field name="name">Tooth Extraction</field>
+        <field name="code">DENT-003</field>
+        <field name="department">dental</field>
+        <field name="price">300.00</field>
+        <field name="duration">1.0</field>
+        <field name="is_procedure" eval="True"/>
+        <field name="product_id" ref="product.service_order_01"/>
+    </record>
+    
+    <record id="dental_service_root_canal" model="clinic.service">
+        <field name="name">Root Canal</field>
+        <field name="code">DENT-004</field>
+        <field name="department">dental</field>
+        <field name="price">800.00</field>
+        <field name="duration">2.0</field>
+        <field name="is_procedure" eval="True"/>
+        <field name="product_id" ref="product.service_order_01"/>
+    </record>
+    
+    <record id="dental_service_crown" model="clinic.service">
+        <field name="name">Dental Crown</field>
+        <field name="code">DENT-005</field>
+        <field name="department">dental</field>
+        <field name="price">1200.00</field>
+        <field name="duration">2.0</field>
+        <field name="is_procedure" eval="True"/>
+        <field name="product_id" ref="product.service_order_01"/>
+    </record>
+</odoo>

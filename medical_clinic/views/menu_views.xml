@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem id="menu_clinic_root" name="Medical Clinic" sequence="10" web_icon="medical_clinic,static/description/icon.png"/>
+    
+    <!-- Patient Management -->
+    <menuitem id="menu_clinic_patients" name="Patients" parent="menu_clinic_root" sequence="10"/>
+    <menuitem id="menu_clinic_patients_list" name="Patients" parent="menu_clinic_patients" action="action_clinic_patient" sequence="10"/>
+    
+    <!-- Appointments -->
+    <menuitem id="menu_clinic_appointments" name="Appointments" parent="menu_clinic_root" sequence="20"/>
+    <menuitem id="menu_clinic_appointments_calendar" name="Calendar" parent="menu_clinic_appointments" action="action_clinic_appointment_calendar" sequence="10"/>
+    <menuitem id="menu_clinic_appointments_list" name="All Appointments" parent="menu_clinic_appointments" action="action_clinic_appointment" sequence="20"/>
+    
+    <!-- Treatments -->
+    <menuitem id="menu_clinic_treatments" name="Treatments" parent="menu_clinic_root" sequence="30"/>
+    <menuitem id="menu_clinic_treatments_list" name="Treatment Records" parent="menu_clinic_treatments" action="action_clinic_treatment" sequence="10"/>
+    
+    <!-- Dental -->
+    <menuitem id="menu_clinic_dental" name="Dental" parent="menu_clinic_root" sequence="40"/>
+    <menuitem id="menu_clinic_dental_charts" name="Dental Charts" parent="menu_clinic_dental" action="action_clinic_dental_chart" sequence="10"/>
+    
+    <!-- Insurance -->
+    <menuitem id="menu_clinic_insurance" name="Insurance" parent="menu_clinic_root" sequence="50"/>
+    <menuitem id="menu_clinic_insurance_plans" name="Insurance Plans" parent="menu_clinic_insurance" action="action_clinic_insurance" sequence="10"/>
+    <menuitem id="menu_clinic_insurance_claims" name="Claims" parent="menu_clinic_insurance" action="action_clinic_insurance_claim" sequence="20"/>
+    
+    <!-- Configuration -->
+    <menuitem id="menu_clinic_config" name="Configuration" parent="menu_clinic_root" sequence="100" groups="group_clinic_manager"/>
+    <menuitem id="menu_clinic_services" name="Services" parent="menu_clinic_config" action="action_clinic_service" sequence="10"/>
+    
+    <!-- Dashboard -->
+    <menuitem id="menu_clinic_dashboard" name="Dashboard" parent="menu_clinic_root" sequence="1" action="action_clinic_dashboard"/>
+</odoo>

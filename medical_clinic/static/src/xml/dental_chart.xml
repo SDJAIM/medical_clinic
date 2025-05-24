@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="medical_clinic.Dashboard">
+        <div class="o_medical_clinic_dashboard">
+            <div class="o_control_panel">
+                <div class="o_cp_top_left">
+                    <h1>Medical Clinic Dashboard</h1>
+                </div>
+            </div>
+            <div class="container-fluid mt-4">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h2 class="text-primary">Today's Appointments</h2>
+                                <p class="display-4">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h2 class="text-success">Completed Treatments</h2>
+                                <p class="display-4">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h2 class="text-warning">Pending Claims</h2>
+                                <p class="display-4">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h2 class="text-info">Active Patients</h2>
+                                <p class="display-4">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
