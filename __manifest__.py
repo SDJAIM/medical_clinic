@@ -28,9 +28,9 @@ Comprehensive solution for medical and dental clinics featuring:
         'portal',
     ],
     'data': [
-        # Security
-        'security/ir.model.access.csv',
+        # Security - Groups must be created before access rights!
         'security/clinic_security.xml',
+        'security/ir.model.access.csv',
         
         # Data
         'data/clinic_data.xml',
