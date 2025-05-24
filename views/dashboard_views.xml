@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Dashboard Action -->
-    <record id="action_clinic_dashboard" model="ir.actions.client">
+    <record id="action_clinic_dashboard" model="ir.actions.act_window">
         <field name="name">Medical Clinic Dashboard</field>
-        <field name="tag">medical_clinic.dashboard</field>
+        <field name="res_model">clinic.patient</field>
+        <field name="view_mode">kanban</field>
+        <field name="view_id" ref="view_clinic_patient_kanban"/>
+        <field name="context">{'search_default_active_patients': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Welcome to Medical Clinic Management
+            </p>
+        </field>
     </record>
     
     <!-- Service Views -->

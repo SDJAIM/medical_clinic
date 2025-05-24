@@ -123,7 +123,7 @@
                 <filter name="has_insurance" string="Has Insurance" domain="[('insurance_ids', '!=', False)]"/>
                 <separator/>
                 <filter name="visited_this_month" string="Visited This Month" 
-                        domain="[('last_visit_date', '&gt;=', (datetime.datetime.now() - relativedelta(months=1)).strftime('%Y-%m-01'))]"/>
+                        domain="[('last_visit_date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
                 <group string="Group By">
                     <filter name="group_by_gender" string="Gender" context="{'group_by': 'gender'}"/>
                     <filter name="group_by_blood_group" string="Blood Group" context="{'group_by': 'blood_group'}"/>
