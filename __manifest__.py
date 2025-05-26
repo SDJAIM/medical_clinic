@@ -24,6 +24,7 @@ Comprehensive solution for medical and dental clinics featuring:
         'account',
         'hr',
         'stock',
+        'product',  # Added for product management
         'web',
         'portal',
     ],
@@ -58,9 +59,9 @@ Comprehensive solution for medical and dental clinics featuring:
     ],
     'assets': {
         'web.assets_backend': [
-            'medical_clinic/static/src/js/dental_chart.js',
-            'medical_clinic/static/src/xml/dental_chart.xml',
-            'medical_clinic/static/src/css/dental_chart.css',
+            'medical_clinic/static/src/js/**/*.js',
+            'medical_clinic/static/src/xml/**/*.xml',
+            'medical_clinic/static/src/css/**/*.css',
         ],
     },
     'installable': True,

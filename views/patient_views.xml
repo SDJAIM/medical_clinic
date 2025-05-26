@@ -122,8 +122,13 @@
                 <filter name="active_patients" string="Active" domain="[('state', '=', 'active')]"/>
                 <filter name="has_insurance" string="Has Insurance" domain="[('insurance_ids', '!=', False)]"/>
                 <separator/>
-                <filter name="visited_this_month" string="Visited This Month" 
-                        domain="[('last_visit_date', '&gt;=', context_today().strftime('%Y-%m-01'))]"/>
+                <filter name="visited_this_month" string="Visited This Month">
+                    <domain>
+                        <![CDATA[
+                        [('last_visit_date', '>=', context_today().strftime('%Y-%m-01'))]
+                        ]]>
+                    </domain>
+                </filter>
                 <group string="Group By">
                     <filter name="group_by_gender" string="Gender" context="{'group_by': 'gender'}"/>
                     <filter name="group_by_blood_group" string="Blood Group" context="{'group_by': 'blood_group'}"/>
@@ -150,8 +155,14 @@
                     <t t-name="kanban-box">
                         <div class="oe_kanban_global_click">
                             <div class="o_kanban_image">
-                                <img t-att-src="kanban_image('clinic.patient', 'image', record.id.raw_value)" 
-                                     t-att-alt="record.full_name.value" width="48" height="48"/>
+                                <t t-if="record.image.raw_value">
+                                    <img t-att-src="image_data_uri(record.image.raw_value)" 
+                                         t-att-alt="record.full_name.value" width="48" height="48"/>
+                                </t>
+                                <t t-else="">
+                                    <img src="/web/static/img/placeholder.png" 
+                                         t-att-alt="record.full_name.value" width="48" height="48"/>
+                                </t>
                             </div>
                             <div class="oe_kanban_details">
                                 <strong class="o_kanban_record_title">

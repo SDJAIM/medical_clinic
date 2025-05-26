@@ -1,81 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- General Medical Services -->
+    <!-- Medical Services -->
     <record id="service_consultation" model="clinic.service">
         <field name="name">General Consultation</field>
-        <field name="code">GEN-001</field>
+        <field name="code">CONS001</field>
         <field name="department">general</field>
-        <field name="price">100.00</field>
+        <field name="price">50.0</field>
         <field name="duration">0.5</field>
-        <field name="product_id" ref="product.service_order_01"/>
-    </record>
-    
-    <record id="service_followup" model="clinic.service">
-        <field name="name">Follow-up Consultation</field>
-        <field name="code">GEN-002</field>
-        <field name="department">general</field>
-        <field name="price">75.00</field>
-        <field name="duration">0.25</field>
-        <field name="product_id" ref="product.service_order_01"/>
+        <field name="is_procedure" eval="False"/>
+        <field name="product_id" ref="product.product_product_2"/>
     </record>
     
     <record id="service_emergency" model="clinic.service">
         <field name="name">Emergency Consultation</field>
-        <field name="code">GEN-003</field>
+        <field name="code">EMRG001</field>
         <field name="department">general</field>
-        <field name="price">200.00</field>
+        <field name="price">150.0</field>
         <field name="duration">1.0</field>
-        <field name="product_id" ref="product.service_order_01"/>
+        <field name="is_procedure" eval="False"/>
+        <field name="product_id" ref="product.product_product_3"/>
     </record>
     
-    <!-- Lab Services -->
     <record id="service_blood_test" model="clinic.service">
         <field name="name">Complete Blood Count</field>
-        <field name="code">LAB-001</field>
+        <field name="code">LAB001</field>
         <field name="department">laboratory</field>
-        <field name="price">50.00</field>
+        <field name="price">25.0</field>
         <field name="duration">0.25</field>
-        <field name="product_id" ref="product.service_order_01"/>
+        <field name="is_procedure" eval="True"/>
+        <field name="preparation_instructions">Fasting for 8 hours before test</field>
+        <field name="product_id" ref="product.product_product_4"/>
     </record>
     
-    <record id="service_urine_test" model="clinic.service">
-        <field name="name">Urinalysis</field>
-        <field name="code">LAB-002</field>
-        <field name="department">laboratory</field>
-        <field name="price">30.00</field>
-        <field name="duration">0.25</field>
-        <field name="product_id" ref="product.service_order_01"/>
-    </record>
-    
-    <!-- Radiology Services -->
     <record id="service_xray" model="clinic.service">
         <field name="name">X-Ray</field>
-        <field name="code">RAD-001</field>
+        <field name="code">RAD001</field>
         <field name="department">radiology</field>
-        <field name="price">150.00</field>
+        <field name="price">75.0</field>
         <field name="duration">0.5</field>
         <field name="is_procedure" eval="True"/>
-        <field name="product_id" ref="product.service_order_01"/>
+        <field name="product_id" ref="product.product_product_5"/>
     </record>
     
-    <record id="service_mri" model="clinic.service">
-        <field name="name">MRI Scan</field>
-        <field name="code">RAD-002</field>
-        <field name="department">radiology</field>
-        <field name="price">1500.00</field>
+    <record id="service_ecg" model="clinic.service">
+        <field name="name">Electrocardiogram (ECG)</field>
+        <field name="code">CARD001</field>
+        <field name="department">cardiology</field>
+        <field name="price">40.0</field>
+        <field name="duration">0.25</field>
+        <field name="is_procedure" eval="True"/>
+        <field name="product_id" ref="product.product_product_6"/>
+    </record>
+    
+    <record id="service_vaccination" model="clinic.service">
+        <field name="name">Vaccination</field>
+        <field name="code">VAC001</field>
+        <field name="department">general</field>
+        <field name="price">30.0</field>
+        <field name="duration">0.25</field>
+        <field name="is_procedure" eval="True"/>
+        <field name="product_id" ref="product.product_product_7"/>
+    </record>
+    
+    <record id="service_physical_therapy" model="clinic.service">
+        <field name="name">Physical Therapy Session</field>
+        <field name="code">PHYS001</field>
+        <field name="department">orthopedics</field>
+        <field name="price">60.0</field>
         <field name="duration">1.0</field>
         <field name="is_procedure" eval="True"/>
-        <field name="preparation_instructions">No metal objects. Inform if claustrophobic.</field>
-        <field name="product_id" ref="product.service_order_01"/>
-    </record>
-    
-    <record id="service_ultrasound" model="clinic.service">
-        <field name="name">Ultrasound</field>
-        <field name="code">RAD-003</field>
-        <field name="department">radiology</field>
-        <field name="price">200.00</field>
-        <field name="duration">0.5</field>
-        <field name="is_procedure" eval="True"/>
-        <field name="product_id" ref="product.service_order_01"/>
+        <field name="product_id" ref="product.product_product_8"/>
     </record>
 </odoo>

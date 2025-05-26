@@ -6,7 +6,7 @@
         <field name="model">clinic.appointment</field>
         <field name="arch" type="xml">
             <calendar string="Appointments" date_start="date" date_stop="end_date" 
-                      color="doctor_id" mode="week" event_open_popup="true">
+                     color="doctor_id" mode="month" quick_add="False">
                 <field name="patient_id"/>
                 <field name="doctor_id"/>
                 <field name="appointment_type"/>
@@ -23,16 +23,12 @@
             <tree string="Appointments" decoration-info="state == 'draft'" 
                   decoration-success="state == 'done'" decoration-danger="state == 'cancelled'">
                 <field name="appointment_code"/>
-                <field name="date"/>
                 <field name="patient_id"/>
                 <field name="doctor_id"/>
+                <field name="date"/>
                 <field name="appointment_type"/>
                 <field name="department"/>
                 <field name="state" widget="badge"/>
-                <button name="action_confirm" type="object" string="Confirm" 
-                        icon="fa-check" invisible="state != 'draft'"/>
-                <button name="action_cancel" type="object" string="Cancel" 
-                        icon="fa-times" invisible="state not in ('draft', 'confirmed')"/>
             </tree>
         </field>
     </record>
@@ -45,34 +41,35 @@
             <form string="Appointment">
                 <header>
                     <button name="action_confirm" type="object" string="Confirm" 
-                            invisible="state != 'draft'" class="btn-primary"/>
+                            class="btn-primary" invisible="state != 'draft'"/>
                     <button name="action_mark_arrived" type="object" string="Mark Arrived" 
                             invisible="state != 'confirmed'"/>
                     <button name="action_start_consultation" type="object" string="Start Consultation" 
-                            invisible="state != 'arrived'" class="btn-primary"/>
+                            class="btn-success" invisible="state != 'arrived'"/>
                     <button name="action_done" type="object" string="Complete" 
-                            invisible="state != 'in_progress'" class="btn-success"/>
+                            invisible="state != 'in_progress'"/>
                     <button name="action_cancel" type="object" string="Cancel" 
-                            invisible="state not in ('draft', 'confirmed')"/>
+                            invisible="state in ['done', 'cancelled']"/>
                     <button name="action_reschedule" type="object" string="Reschedule" 
-                            invisible="state not in ('draft', 'confirmed')"/>
+                            invisible="state in ['done', 'cancelled']"/>
                     <field name="state" widget="statusbar" 
                            statusbar_visible="draft,confirmed,arrived,in_progress,done"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <label for="appointment_code" string="Appointment"/>
-                        <h1><field name="appointment_code" readonly="1"/></h1>
+                        <h1>
+                            <field name="appointment_code" readonly="1"/>
+                        </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="patient_id" options="{'no_create': True}"/>
+                            <field name="patient_id"/>
                             <field name="patient_phone"/>
                             <field name="patient_email"/>
                             <field name="patient_age"/>
                         </group>
                         <group>
-                            <field name="doctor_id" domain="[('is_medical_professional', '=', True)]"/>
+                            <field name="doctor_id"/>
                             <field name="date"/>
                             <field name="duration" widget="float_time"/>
                             <field name="end_date"/>
@@ -84,20 +81,17 @@
                             <field name="department"/>
                         </group>
                         <group>
-                            <field name="service_ids" widget="many2many_tags" 
-                                   domain="[('department', '=', department)]"/>
-                            <field name="reminder_sent" invisible="1"/>
+                            <field name="service_ids" widget="many2many_tags"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Appointment Details">
+                        <page string="Information">
                             <group>
-                                <field name="chief_complaint" placeholder="Patient's main concern..."/>
+                                <field name="chief_complaint" placeholder="Chief complaint..."/>
                                 <field name="notes" placeholder="Additional notes..."/>
+                                <field name="internal_notes" placeholder="Internal notes (not visible to patient)..." 
+                                       groups="medical_clinic.group_clinic_doctor"/>
                             </group>
-                        </page>
-                        <page string="Internal Notes" groups="group_clinic_nurse,group_clinic_doctor">
-                            <field name="internal_notes" placeholder="Internal notes (not visible to patient)..."/>
                         </page>
                         <page string="Related Records">
                             <group>
@@ -124,23 +118,24 @@
                 <field name="appointment_code"/>
                 <field name="patient_id"/>
                 <field name="doctor_id"/>
+                <field name="date"/>
                 <filter name="today" string="Today" 
-                        domain="[('date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
-                                ('date', '&lt;=', datetime.datetime.now().strftime('%Y-%m-%d 23:59:59'))]"/>
+                        domain="[('date', '>=', context_today()), ('date', '&lt;', context_today() + relativedelta(days=1))]"/>
                 <filter name="upcoming" string="Upcoming" 
-                        domain="[('date', '&gt;', datetime.datetime.now())]"/>
+                        domain="[('date', '>=', context_today())]"/>
                 <separator/>
                 <filter name="draft" string="Scheduled" domain="[('state', '=', 'draft')]"/>
                 <filter name="confirmed" string="Confirmed" domain="[('state', '=', 'confirmed')]"/>
-                <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="done" string="Completed" domain="[('state', '=', 'done')]"/>
                 <separator/>
                 <filter name="my_appointments" string="My Appointments" 
                         domain="[('doctor_id.user_id', '=', uid)]"/>
                 <group string="Group By">
                     <filter name="group_by_date" string="Date" context="{'group_by': 'date:day'}"/>
                     <filter name="group_by_doctor" string="Doctor" context="{'group_by': 'doctor_id'}"/>
-                    <filter name="group_by_department" string="Department" context="{'group_by': 'department'}"/>
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}"/>
                     <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_by_type" string="Type" context="{'group_by': 'appointment_type'}"/>
                 </group>
             </search>
         </field>
@@ -155,10 +150,10 @@
         <field name="context">{'search_default_upcoming': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Schedule a new appointment
+                Schedule your first appointment!
             </p>
             <p>
-                Manage patient appointments, track consultations, and coordinate with doctors.
+                Manage patient appointments, track attendance, and integrate with treatments.
             </p>
         </field>
     </record>
@@ -167,8 +162,7 @@
         <field name="name">Appointment Calendar</field>
         <field name="res_model">clinic.appointment</field>
         <field name="view_mode">calendar,tree,form</field>
-        <field name="view_id" ref="view_clinic_appointment_calendar"/>
         <field name="search_view_id" ref="view_clinic_appointment_search"/>
-        <field name="context">{'default_mode': 'week'}</field>
+        <field name="context">{'default_mode': 'month'}</field>
     </record>
 </odoo>

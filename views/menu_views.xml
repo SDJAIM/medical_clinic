@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Main Menu -->
-    <menuitem id="menu_clinic_root" name="Medical Clinic" sequence="10" web_icon="medical_clinic,static/description/icon.png"/>
+    <menuitem id="menu_clinic_root" name="Medical Clinic" sequence="10" web_icon="medical_clinic,static/description/icon.svg"/>
     
     <!-- Patient Management -->
     <menuitem id="menu_clinic_patients" name="Patients" parent="menu_clinic_root" sequence="10"/>

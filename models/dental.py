@@ -104,6 +104,10 @@ class ClinicDentalTooth(models.Model):
     procedure_ids = fields.One2many('clinic.dental.procedure', 'tooth_id', string='Procedures')
     notes = fields.Text(string='Notes')
     
+    # Multi-company
+    company_id = fields.Many2one('res.company', string='Company', 
+                                related='chart_id.company_id', store=True, readonly=True)
+    
     @api.depends('number', 'name')
     def _compute_display_name(self):
         for rec in self:
@@ -142,3 +146,7 @@ class ClinicDentalProcedure(models.Model):
     # Link to service for billing
     service_id = fields.Many2one('clinic.service', string='Service',
                                 domain=[('department', '=', 'dental')])
+    
+    # Multi-company
+    company_id = fields.Many2one('res.company', string='Company', 
+                                related='tooth_id.company_id', store=True, readonly=True)

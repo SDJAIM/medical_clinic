@@ -113,16 +113,18 @@ class ClinicAppointment(models.Model):
     def _create_calendar_events(self):
         for rec in self:
             if not rec.calendar_event_id and rec.state not in ['cancelled', 'no_show']:
-                event_vals = {
-                    'name': f"Appointment - {rec.patient_id.full_name}",
-                    'start': rec.date,
-                    'stop': rec.end_date,
-                    'user_id': rec.doctor_id.user_id.id if rec.doctor_id.user_id else self.env.user.id,
-                    'partner_ids': [(4, rec.patient_id.partner_id.id)] if rec.patient_id.partner_id else [],
-                    'description': f"Type: {rec.appointment_type}\nDepartment: {rec.department}\n{rec.chief_complaint or ''}",
-                }
-                event = self.env['calendar.event'].create(event_vals)
-                rec.calendar_event_id = event
+                # Only create calendar event if doctor has a user account
+                if rec.doctor_id.user_id:
+                    event_vals = {
+                        'name': f"Appointment - {rec.patient_id.full_name}",
+                        'start': rec.date,
+                        'stop': rec.end_date,
+                        'user_id': rec.doctor_id.user_id.id,
+                        'partner_ids': [(4, rec.patient_id.partner_id.id)] if rec.patient_id.partner_id else [],
+                        'description': f"Type: {rec.appointment_type}\nDepartment: {rec.department}\n{rec.chief_complaint or ''}",
+                    }
+                    event = self.env['calendar.event'].create(event_vals)
+                    rec.calendar_event_id = event
     
     def _update_calendar_events(self):
         for rec in self:
@@ -130,11 +132,13 @@ class ClinicAppointment(models.Model):
                 if rec.state in ['cancelled', 'no_show']:
                     rec.calendar_event_id.unlink()
                 else:
-                    rec.calendar_event_id.write({
-                        'start': rec.date,
-                        'stop': rec.end_date,
-                        'user_id': rec.doctor_id.user_id.id if rec.doctor_id.user_id else self.env.user.id,
-                    })
+                    # Only update if doctor has user account
+                    if rec.doctor_id.user_id:
+                        rec.calendar_event_id.write({
+                            'start': rec.date,
+                            'stop': rec.end_date,
+                            'user_id': rec.doctor_id.user_id.id,
+                        })
     
     @api.constrains('date', 'doctor_id', 'duration')
     def _check_appointment_conflict(self):
@@ -171,6 +175,7 @@ class ClinicAppointment(models.Model):
                 'appointment_id': self.id,
                 'date': fields.Datetime.now(),
                 'chief_complaint': self.chief_complaint,
+                'treatment_type': 'dental' if self.appointment_type == 'dental' else 'consultation',
             })
             self.treatment_id = treatment
         # Open treatment form

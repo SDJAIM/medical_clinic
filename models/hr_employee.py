@@ -20,3 +20,6 @@ class HrEmployee(models.Model):
     
     license_number = fields.Char(string='Medical License Number')
     license_expiry = fields.Date(string='License Expiry Date')
+    
+    # Add appointment relationship
+    appointment_ids = fields.One2many('clinic.appointment', 'doctor_id', string='Appointments')

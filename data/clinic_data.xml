@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Sequences -->
-    <record id="seq_clinic_patient" model="ir.sequence">
-        <field name="name">Patient Sequence</field>
+    <record id="sequence_clinic_patient" model="ir.sequence">
+        <field name="name">Clinic Patient Sequence</field>
         <field name="code">clinic.patient</field>
         <field name="prefix">PAT/%(year)s/</field>
         <field name="padding">5</field>
         <field name="company_id" eval="False"/>
     </record>
     
-    <record id="seq_clinic_appointment" model="ir.sequence">
-        <field name="name">Appointment Sequence</field>
+    <record id="sequence_clinic_appointment" model="ir.sequence">
+        <field name="name">Clinic Appointment Sequence</field>
         <field name="code">clinic.appointment</field>
         <field name="prefix">APT/%(year)s/</field>
         <field name="padding">5</field>
         <field name="company_id" eval="False"/>
     </record>
     
-    <record id="seq_clinic_treatment" model="ir.sequence">
-        <field name="name">Treatment Sequence</field>
+    <record id="sequence_clinic_treatment" model="ir.sequence">
+        <field name="name">Clinic Treatment Sequence</field>
         <field name="code">clinic.treatment</field>
         <field name="prefix">TRT/%(year)s/</field>
         <field name="padding">5</field>
         <field name="company_id" eval="False"/>
     </record>
     
-    <record id="seq_clinic_insurance_claim" model="ir.sequence">
+    <record id="sequence_clinic_insurance_claim" model="ir.sequence">
         <field name="name">Insurance Claim Sequence</field>
         <field name="code">clinic.insurance.claim</field>
         <field name="prefix">CLM/%(year)s/</field>
@@ -33,7 +33,18 @@
         <field name="company_id" eval="False"/>
     </record>
     
-    <!-- Cron Jobs -->
+    <!-- Default data for product categories -->
+    <record id="product_category_medicine" model="product.category">
+        <field name="name">Medicine</field>
+        <field name="parent_id" ref="product.product_category_all"/>
+    </record>
+    
+    <record id="product_category_medical_supplies" model="product.category">
+        <field name="name">Medical Supplies</field>
+        <field name="parent_id" ref="product.product_category_all"/>
+    </record>
+    
+    <!-- Cron job for appointment reminders -->
     <record id="ir_cron_appointment_reminder" model="ir.cron">
         <field name="name">Medical Clinic: Send Appointment Reminders</field>
         <field name="model_id" ref="model_clinic_appointment"/>
@@ -41,16 +52,21 @@
         <field name="code">model.send_appointment_reminders()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
         <field name="active" eval="True"/>
     </record>
     
-    <record id="ir_cron_check_insurance_claims" model="ir.cron">
+    <!-- Cron job for checking insurance claim status -->
+    <record id="ir_cron_insurance_claim_status" model="ir.cron">
         <field name="name">Medical Clinic: Check Insurance Claim Status</field>
         <field name="model_id" ref="model_clinic_insurance_claim"/>
         <field name="state">code</field>
         <field name="code">model.check_claim_status()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
-        <field name="active" eval="True"/>
+        <field name="numbercall">-1</field>
+        <field name="doall" eval="False"/>
+        <field name="active" eval="False"/>
     </record>
 </odoo>

@@ -1,53 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Dental Procedure Types -->
-    <record id="dental_service_cleaning" model="clinic.service">
-        <field name="name">Dental Cleaning</field>
-        <field name="code">DENT-001</field>
+    <!-- Dental Services -->
+    <record id="service_dental_consultation" model="clinic.service">
+        <field name="name">Dental Consultation</field>
+        <field name="code">DENT001</field>
         <field name="department">dental</field>
-        <field name="price">150.00</field>
+        <field name="price">40.0</field>
         <field name="duration">0.5</field>
-        <field name="is_procedure" eval="True"/>
-        <field name="product_id" ref="product.service_order_01"/>
+        <field name="is_procedure" eval="False"/>
+        <field name="product_id" ref="product.product_product_2"/>
     </record>
     
-    <record id="dental_service_filling" model="clinic.service">
+    <record id="service_dental_cleaning" model="clinic.service">
+        <field name="name">Dental Cleaning</field>
+        <field name="code">DENT002</field>
+        <field name="department">dental</field>
+        <field name="price">80.0</field>
+        <field name="duration">1.0</field>
+        <field name="is_procedure" eval="True"/>
+        <field name="product_id" ref="product.product_product_3"/>
+    </record>
+    
+    <record id="service_dental_filling" model="clinic.service">
         <field name="name">Dental Filling</field>
-        <field name="code">DENT-002</field>
+        <field name="code">DENT003</field>
         <field name="department">dental</field>
-        <field name="price">250.00</field>
+        <field name="price">120.0</field>
         <field name="duration">1.0</field>
         <field name="is_procedure" eval="True"/>
-        <field name="product_id" ref="product.service_order_01"/>
+        <field name="product_id" ref="product.product_product_4"/>
     </record>
     
-    <record id="dental_service_extraction" model="clinic.service">
+    <record id="service_tooth_extraction" model="clinic.service">
         <field name="name">Tooth Extraction</field>
-        <field name="code">DENT-003</field>
+        <field name="code">DENT004</field>
         <field name="department">dental</field>
-        <field name="price">300.00</field>
+        <field name="price">150.0</field>
         <field name="duration">1.0</field>
         <field name="is_procedure" eval="True"/>
-        <field name="product_id" ref="product.service_order_01"/>
+        <field name="product_id" ref="product.product_product_5"/>
     </record>
     
-    <record id="dental_service_root_canal" model="clinic.service">
-        <field name="name">Root Canal</field>
-        <field name="code">DENT-004</field>
+    <record id="service_root_canal" model="clinic.service">
+        <field name="name">Root Canal Treatment</field>
+        <field name="code">DENT005</field>
         <field name="department">dental</field>
-        <field name="price">800.00</field>
+        <field name="price">500.0</field>
         <field name="duration">2.0</field>
         <field name="is_procedure" eval="True"/>
-        <field name="product_id" ref="product.service_order_01"/>
+        <field name="product_id" ref="product.product_product_6"/>
     </record>
     
-    <record id="dental_service_crown" model="clinic.service">
+    <record id="service_dental_crown" model="clinic.service">
         <field name="name">Dental Crown</field>
-        <field name="code">DENT-005</field>
+        <field name="code">DENT006</field>
         <field name="department">dental</field>
-        <field name="price">1200.00</field>
+        <field name="price">800.0</field>
         <field name="duration">2.0</field>
         <field name="is_procedure" eval="True"/>
-        <field name="product_id" ref="product.service_order_01"/>
+        <field name="product_id" ref="product.product_product_7"/>
+    </record>
+    
+    <record id="service_teeth_whitening" model="clinic.service">
+        <field name="name">Teeth Whitening</field>
+        <field name="code">DENT007</field>
+        <field name="department">dental</field>
+        <field name="price">300.0</field>
+        <field name="duration">1.5</field>
+        <field name="is_procedure" eval="True"/>
+        <field name="product_id" ref="product.product_product_8"/>
+    </record>
+    
+    <record id="service_dental_implant" model="clinic.service">
+        <field name="name">Dental Implant</field>
+        <field name="code">DENT008</field>
+        <field name="department">dental</field>
+        <field name="price">2000.0</field>
+        <field name="duration">3.0</field>
+        <field name="is_procedure" eval="True"/>
+        <field name="product_id" ref="product.product_product_7"/>
     </record>
 </odoo>

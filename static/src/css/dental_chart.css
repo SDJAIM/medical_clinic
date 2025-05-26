@@ -22,3 +22,79 @@
 .o_medical_clinic_dashboard .display-4 {
     font-weight: 600;
 }
+
+/* Dental Chart Styles */
+.o_dental_chart_widget {
+    padding: 20px;
+}
+
+.dental-chart-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.tooth-grid {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: 5px;
+    margin: 20px 0;
+}
+
+.tooth-item {
+    aspect-ratio: 1;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.tooth-item:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.tooth-item.healthy {
+    background-color: #28a745;
+    color: white;
+}
+
+.tooth-item.cavity {
+    background-color: #ffc107;
+    color: #333;
+}
+
+.tooth-item.filled {
+    background-color: #6c757d;
+    color: white;
+}
+
+.tooth-item.crown {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.tooth-item.root_canal {
+    background-color: #dc3545;
+    color: white;
+}
+
+.tooth-item.extracted {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border-style: dashed;
+}
+
+.tooth-item.implant {
+    background-color: #007bff;
+    color: white;
+}
+
+.tooth-item.bridge {
+    background-color: #6610f2;
+    color: white;
+}

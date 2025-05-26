@@ -7,13 +7,12 @@
         <field name="arch" type="xml">
             <tree string="Treatments" decoration-info="state == 'draft'" decoration-success="state == 'done'">
                 <field name="treatment_code"/>
-                <field name="date"/>
                 <field name="patient_id"/>
                 <field name="doctor_id"/>
+                <field name="date"/>
                 <field name="treatment_type"/>
+                <field name="chief_complaint"/>
                 <field name="state" widget="badge"/>
-                <button name="action_complete" type="object" string="Complete" 
-                        icon="fa-check" invisible="state != 'draft'"/>
             </tree>
         </field>
     </record>
@@ -26,31 +25,32 @@
             <form string="Treatment">
                 <header>
                     <button name="action_complete" type="object" string="Complete Treatment" 
-                            invisible="state != 'draft'" class="btn-primary"/>
+                            class="btn-primary" invisible="state != 'draft'"/>
                     <button name="action_print_prescription" type="object" string="Print Prescription" 
-                            invisible="not prescription_ids"/>
+                            invisible="state != 'done' or not prescription_ids"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <label for="treatment_code" string="Treatment"/>
-                        <h1><field name="treatment_code" readonly="1"/></h1>
+                        <h1>
+                            <field name="treatment_code" readonly="1"/>
+                        </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="patient_id" readonly="state != 'draft'"/>
-                            <field name="doctor_id" readonly="state != 'draft'"/>
-                            <field name="appointment_id" readonly="1"/>
+                            <field name="patient_id"/>
+                            <field name="doctor_id"/>
+                            <field name="appointment_id"/>
                         </group>
                         <group>
-                            <field name="date" readonly="state != 'draft'"/>
+                            <field name="date"/>
                             <field name="treatment_type"/>
                         </group>
                     </group>
                     <notebook>
                         <page string="Chief Complaint &amp; History">
                             <group>
-                                <field name="chief_complaint" placeholder="Patient's main concern..."/>
+                                <field name="chief_complaint" placeholder="Chief complaint..."/>
                                 <field name="history_present_illness" placeholder="History of present illness..."/>
                             </group>
                         </page>
@@ -59,18 +59,18 @@
                                 <group>
                                     <label for="blood_pressure_systolic" string="Blood Pressure"/>
                                     <div class="o_row">
-                                        <field name="blood_pressure_systolic" placeholder="Systolic" style="width: 60px;"/>
+                                        <field name="blood_pressure_systolic" placeholder="Systolic" style="width: 80px"/>
                                         <span>/</span>
-                                        <field name="blood_pressure_diastolic" placeholder="Diastolic" style="width: 60px;"/>
+                                        <field name="blood_pressure_diastolic" placeholder="Diastolic" style="width: 80px"/>
                                         <span>mmHg</span>
                                     </div>
-                                    <field name="pulse_rate" placeholder="bpm"/>
-                                    <field name="temperature" placeholder="°C"/>
+                                    <field name="pulse_rate" widget="integer"/>
+                                    <field name="temperature"/>
                                 </group>
                                 <group>
-                                    <field name="respiratory_rate" placeholder="breaths/min"/>
-                                    <field name="weight" placeholder="kg"/>
-                                    <field name="height" placeholder="cm"/>
+                                    <field name="respiratory_rate" widget="integer"/>
+                                    <field name="weight"/>
+                                    <field name="height"/>
                                     <field name="bmi"/>
                                 </group>
                             </group>
@@ -90,23 +90,22 @@
                         </page>
                         <page string="Treatment Plan">
                             <field name="treatment_plan" placeholder="Treatment plan..."/>
-                            <separator string="Prescriptions"/>
+                            <separator string="Procedures Performed"/>
+                            <field name="procedure_ids" widget="many2many_tags"/>
+                        </page>
+                        <page string="Prescription">
                             <field name="prescription_ids">
                                 <tree editable="bottom">
-                                    <field name="medicine_id" domain="[('is_medicine', '=', True)]"/>
+                                    <field name="medicine_id"/>
                                     <field name="dosage"/>
                                     <field name="frequency"/>
-                                    <field name="duration"/>
+                                    <field name="duration" widget="integer"/>
                                     <field name="quantity"/>
                                     <field name="instructions"/>
                                 </tree>
                             </field>
                         </page>
-                        <page string="Lab Tests &amp; Procedures">
-                            <group>
-                                <field name="procedure_ids" widget="many2many_tags"/>
-                            </group>
-                            <separator string="Lab Tests"/>
+                        <page string="Lab Tests">
                             <field name="lab_test_ids">
                                 <tree>
                                     <field name="test_type"/>
@@ -122,14 +121,14 @@
                                 <field name="follow_up_notes" placeholder="Follow-up instructions..."/>
                             </group>
                         </page>
+                        <page string="Documents">
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </page>
                         <page string="Billing">
                             <group>
                                 <field name="invoice_id" readonly="1"/>
                                 <field name="insurance_claim_id" readonly="1"/>
                             </group>
-                        </page>
-                        <page string="Documents">
-                            <field name="attachment_ids" widget="many2many_binary"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -151,22 +150,19 @@
                 <field name="patient_id"/>
                 <field name="doctor_id"/>
                 <field name="chief_complaint"/>
-                <filter name="today" string="Today" 
-                        domain="[('date', '&gt;=', datetime.datetime.now().strftime('%Y-%m-%d 00:00:00')),
-                                ('date', '&lt;=', datetime.datetime.now().strftime('%Y-%m-%d 23:59:59'))]"/>
-                <filter name="this_week" string="This Week" 
-                        domain="[('date', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                <filter name="my_treatments" string="My Treatments" 
+                        domain="[('doctor_id.user_id', '=', uid)]"/>
                 <separator/>
                 <filter name="draft" string="In Progress" domain="[('state', '=', 'draft')]"/>
                 <filter name="done" string="Completed" domain="[('state', '=', 'done')]"/>
                 <separator/>
-                <filter name="my_treatments" string="My Treatments" 
-                        domain="[('doctor_id.user_id', '=', uid)]"/>
+                <filter name="today" string="Today" domain="[('date', '>=', context_today()), ('date', '&lt;', context_today() + relativedelta(days=1))]"/>
+                <filter name="this_week" string="This Week" domain="[('date', '>=', (context_today() - relativedelta(days=context_today().weekday())).strftime('%Y-%m-%d')), ('date', '&lt;', (context_today() - relativedelta(days=context_today().weekday()) + relativedelta(days=7)).strftime('%Y-%m-%d'))]"/>
                 <group string="Group By">
-                    <filter name="group_by_date" string="Date" context="{'group_by': 'date:day'}"/>
                     <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}"/>
                     <filter name="group_by_doctor" string="Doctor" context="{'group_by': 'doctor_id'}"/>
                     <filter name="group_by_type" string="Type" context="{'group_by': 'treatment_type'}"/>
+                    <filter name="group_by_date" string="Date" context="{'group_by': 'date:day'}"/>
                     <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
                 </group>
             </search>
@@ -175,17 +171,17 @@
     
     <!-- Action -->
     <record id="action_clinic_treatment" model="ir.actions.act_window">
-        <field name="name">Treatment Records</field>
+        <field name="name">Treatments</field>
         <field name="res_model">clinic.treatment</field>
         <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="view_clinic_treatment_search"/>
         <field name="context">{'search_default_my_treatments': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create a treatment record
+                No treatments found!
             </p>
             <p>
-                Document patient examinations, diagnoses, and treatment plans.
+                Start recording patient treatments, diagnoses, and prescriptions.
             </p>
         </field>
     </record>

@@ -156,6 +156,10 @@ class ClinicDiagnosis(models.Model):
     diagnosis = fields.Char(string='Diagnosis', required=True)
     icd_code = fields.Char(string='ICD Code')
     notes = fields.Text(string='Notes')
+    
+    # Multi-company
+    company_id = fields.Many2one('res.company', string='Company', 
+                                related='treatment_id.company_id', store=True, readonly=True)
 
 
 class ClinicPrescription(models.Model):
@@ -177,6 +181,10 @@ class ClinicPrescription(models.Model):
     duration = fields.Integer(string='Duration (days)', required=True)
     quantity = fields.Float(string='Quantity', required=True)
     instructions = fields.Text(string='Instructions')
+    
+    # Multi-company
+    company_id = fields.Many2one('res.company', string='Company', 
+                                related='treatment_id.company_id', store=True, readonly=True)
     
     @api.onchange('medicine_id', 'duration', 'frequency')
     def _onchange_calculate_quantity(self):
@@ -209,3 +217,7 @@ class ClinicLabTest(models.Model):
         ('in_progress', 'In Progress'),
         ('done', 'Completed')
     ], default='requested')
+    
+    # Multi-company
+    company_id = fields.Many2one('res.company', string='Company', 
+                                related='treatment_id.company_id', store=True, readonly=True)

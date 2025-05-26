@@ -9,10 +9,9 @@
                 <field name="patient_id"/>
                 <field name="insurance_company_id"/>
                 <field name="policy_number"/>
-                <field name="plan_type"/>
+                <field name="plan_name"/>
                 <field name="is_primary" widget="boolean_toggle"/>
                 <field name="is_active" widget="badge" decoration-success="is_active" decoration-danger="not is_active"/>
-                <field name="remaining_coverage" widget="monetary"/>
             </tree>
         </field>
     </record>
@@ -24,30 +23,15 @@
         <field name="arch" type="xml">
             <form string="Insurance Plan">
                 <sheet>
-                    <div class="oe_button_box" name="button_box">
-                        <button name="%(action_clinic_insurance_claim)d" type="action" 
-                                class="oe_stat_button" icon="fa-file-text-o"
-                                context="{'search_default_insurance_id': id}">
-                            <div class="o_stat_info">
-                                <field name="total_claimed" widget="monetary"/>
-                                <span class="o_stat_text">Claimed</span>
-                            </div>
-                        </button>
-                        <button name="%(action_clinic_insurance_claim)d" type="action" 
-                                class="oe_stat_button" icon="fa-check-circle-o"
-                                context="{'search_default_insurance_id': id, 'search_default_approved': 1}">
-                            <div class="o_stat_info">
-                                <field name="total_approved" widget="monetary"/>
-                                <span class="o_stat_text">Approved</span>
-                            </div>
-                        </button>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name" readonly="1"/>
+                        </h1>
                     </div>
-                    <widget name="web_ribbon" title="Active" bg_color="bg-success" invisible="not is_active"/>
-                    <widget name="web_ribbon" title="Expired" bg_color="bg-danger" invisible="is_active"/>
                     <group>
                         <group>
-                            <field name="patient_id" readonly="id"/>
-                            <field name="insurance_company_id" domain="[('is_insurance_company', '=', True)]"/>
+                            <field name="patient_id"/>
+                            <field name="insurance_company_id"/>
                             <field name="policy_number"/>
                             <field name="group_number"/>
                         </group>
@@ -55,13 +39,13 @@
                             <field name="plan_name"/>
                             <field name="plan_type"/>
                             <field name="is_primary"/>
+                            <field name="is_active"/>
                         </group>
                     </group>
                     <group>
                         <group string="Validity">
                             <field name="start_date"/>
                             <field name="end_date"/>
-                            <field name="is_active" invisible="1"/>
                         </group>
                         <group string="Coverage">
                             <field name="coverage_percentage" widget="percentage"/>
@@ -69,21 +53,23 @@
                             <field name="deductible_met" widget="monetary"/>
                             <field name="max_coverage" widget="monetary"/>
                             <field name="copay_amount" widget="monetary"/>
-                            <field name="remaining_coverage" widget="monetary"/>
                         </group>
+                    </group>
+                    <group string="Claim Summary">
+                        <field name="total_claimed" widget="monetary"/>
+                        <field name="total_approved" widget="monetary"/>
+                        <field name="remaining_coverage" widget="monetary"/>
                     </group>
                     <notebook>
                         <page string="Claims">
-                            <field name="claim_ids" readonly="1">
+                            <field name="claim_ids">
                                 <tree>
                                     <field name="claim_number"/>
                                     <field name="claim_date"/>
-                                    <field name="treatment_id"/>
-                                    <field name="amount_claimed" widget="monetary"/>
-                                    <field name="amount_approved" widget="monetary"/>
-                                    <field name="state" widget="badge" 
-                                           decoration-success="state in ('approved', 'paid')"
-                                           decoration-danger="state == 'rejected'"/>
+                                    <field name="service_date"/>
+                                    <field name="amount_claimed" sum="Total Claimed"/>
+                                    <field name="amount_approved" sum="Total Approved"/>
+                                    <field name="state" widget="badge"/>
                                 </tree>
                             </field>
                         </page>
@@ -99,19 +85,17 @@
         <field name="model">clinic.insurance.claim</field>
         <field name="arch" type="xml">
             <tree string="Insurance Claims" decoration-info="state == 'draft'" 
-                  decoration-warning="state in ('submitted', 'in_review')"
-                  decoration-success="state in ('approved', 'paid')"
+                  decoration-warning="state in ['submitted', 'in_review']"
+                  decoration-success="state in ['approved', 'paid']"
                   decoration-danger="state == 'rejected'">
                 <field name="claim_number"/>
-                <field name="claim_date"/>
                 <field name="patient_id"/>
                 <field name="insurance_id"/>
-                <field name="treatment_id"/>
-                <field name="amount_claimed" widget="monetary"/>
-                <field name="amount_approved" widget="monetary"/>
+                <field name="claim_date"/>
+                <field name="amount_claimed" sum="Total"/>
+                <field name="amount_approved" sum="Total"/>
+                <field name="amount_paid" sum="Total"/>
                 <field name="state" widget="badge"/>
-                <button name="action_submit" type="object" string="Submit" 
-                        icon="fa-send" invisible="state != 'draft'"/>
             </tree>
         </field>
     </record>
@@ -123,37 +107,36 @@
         <field name="arch" type="xml">
             <form string="Insurance Claim">
                 <header>
-                    <button name="action_submit" type="object" string="Submit Claim" 
-                            invisible="state != 'draft'" class="btn-primary"/>
+                    <button name="action_submit" type="object" string="Submit" 
+                            class="btn-primary" invisible="state != 'draft'"/>
                     <button name="action_approve" type="object" string="Approve" 
-                            invisible="state not in ('submitted', 'in_review')" 
-                            groups="group_clinic_billing,group_clinic_manager"/>
+                            invisible="state not in ['submitted', 'in_review']"
+                            groups="medical_clinic.group_clinic_manager"/>
                     <button name="action_reject" type="object" string="Reject" 
-                            invisible="state not in ('submitted', 'in_review')" 
-                            groups="group_clinic_billing,group_clinic_manager"/>
+                            invisible="state not in ['submitted', 'in_review']"
+                            groups="medical_clinic.group_clinic_manager"/>
                     <button name="action_mark_paid" type="object" string="Mark as Paid" 
-                            invisible="state != 'approved'" class="btn-success"
-                            groups="group_clinic_billing,group_clinic_manager"/>
+                            invisible="state != 'approved'"
+                            groups="medical_clinic.group_clinic_manager"/>
                     <field name="state" widget="statusbar" 
                            statusbar_visible="draft,submitted,in_review,approved,paid"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
-                        <label for="claim_number" string="Claim"/>
-                        <h1><field name="claim_number" readonly="1"/></h1>
+                        <h1>
+                            <field name="claim_number" readonly="1"/>
+                        </h1>
                     </div>
                     <group>
                         <group>
-                            <field name="patient_id" readonly="state != 'draft'"/>
-                            <field name="insurance_id" domain="[('patient_id', '=', patient_id), ('is_active', '=', True)]"
-                                   readonly="state != 'draft'"/>
-                            <field name="treatment_id" domain="[('patient_id', '=', patient_id)]"
-                                   readonly="state != 'draft'"/>
-                            <field name="invoice_id" readonly="1"/>
+                            <field name="patient_id"/>
+                            <field name="insurance_id" domain="[('patient_id', '=', patient_id), ('is_active', '=', True)]"/>
+                            <field name="treatment_id"/>
+                            <field name="invoice_id"/>
                         </group>
                         <group>
-                            <field name="claim_date" readonly="state != 'draft'"/>
-                            <field name="service_date" readonly="state != 'draft'"/>
+                            <field name="claim_date"/>
+                            <field name="service_date"/>
                             <field name="submission_date" readonly="1"/>
                             <field name="approval_date" readonly="1"/>
                             <field name="payment_date" readonly="1"/>
@@ -161,32 +144,28 @@
                     </group>
                     <group>
                         <group string="Claim Details">
-                            <field name="diagnosis_codes" placeholder="ICD-10 codes..."
-                                   readonly="state != 'draft'"/>
-                            <field name="procedure_codes" placeholder="CPT codes..."
-                                   readonly="state != 'draft'"/>
+                            <field name="diagnosis_codes" placeholder="ICD codes..."/>
+                            <field name="procedure_codes" placeholder="CPT codes..."/>
                         </group>
                         <group string="Amounts">
-                            <field name="amount_claimed" widget="monetary" readonly="state != 'draft'"/>
-                            <field name="amount_approved" widget="monetary" 
-                                   readonly="state not in ('submitted', 'in_review')"
-                                   groups="group_clinic_billing,group_clinic_manager"/>
-                            <field name="amount_paid" widget="monetary" readonly="1"/>
+                            <field name="amount_claimed" widget="monetary"/>
+                            <field name="amount_approved" widget="monetary"/>
+                            <field name="amount_paid" widget="monetary"/>
                             <field name="patient_responsibility" widget="monetary"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Payment Information" invisible="state not in ('approved', 'paid')">
+                        <page string="Payment Information" invisible="state not in ['approved', 'paid']">
                             <group>
                                 <field name="payment_reference"/>
                                 <field name="payment_method"/>
                             </group>
                         </page>
-                        <page string="Rejection Details" invisible="state != 'rejected'">
+                        <page string="Rejection" invisible="state != 'rejected'">
                             <field name="rejection_reason" readonly="1"/>
                         </page>
                         <page string="Notes">
-                            <field name="notes" placeholder="Additional notes..."/>
+                            <field name="notes"/>
                         </page>
                         <page string="Documents">
                             <field name="attachment_ids" widget="many2many_binary"/>
@@ -202,6 +181,25 @@
     </record>
     
     <!-- Search Views -->
+    <record id="view_clinic_insurance_search" model="ir.ui.view">
+        <field name="name">clinic.insurance.search</field>
+        <field name="model">clinic.insurance</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="patient_id"/>
+                <field name="insurance_company_id"/>
+                <field name="policy_number"/>
+                <filter name="active" string="Active" domain="[('is_active', '=', True)]"/>
+                <filter name="primary" string="Primary" domain="[('is_primary', '=', True)]"/>
+                <group string="Group By">
+                    <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}"/>
+                    <filter name="group_by_company" string="Insurance Company" context="{'group_by': 'insurance_company_id'}"/>
+                    <filter name="group_by_type" string="Plan Type" context="{'group_by': 'plan_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
     <record id="view_clinic_insurance_claim_search" model="ir.ui.view">
         <field name="name">clinic.insurance.claim.search</field>
         <field name="model">clinic.insurance.claim</field>
@@ -217,12 +215,12 @@
                 <filter name="paid" string="Paid" domain="[('state', '=', 'paid')]"/>
                 <separator/>
                 <filter name="this_month" string="This Month" 
-                        domain="[('claim_date', '>=', (datetime.datetime.now()).strftime('%Y-%m-01'))]"/>
+                        domain="[('claim_date', '>=', context_today().strftime('%Y-%m-01'))]"/>
                 <group string="Group By">
                     <filter name="group_by_patient" string="Patient" context="{'group_by': 'patient_id'}"/>
                     <filter name="group_by_insurance" string="Insurance" context="{'group_by': 'insurance_id'}"/>
                     <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
-                    <filter name="group_by_claim_date" string="Claim Date" context="{'group_by': 'claim_date:month'}"/>
+                    <filter name="group_by_date" string="Claim Date" context="{'group_by': 'claim_date:month'}"/>
                 </group>
             </search>
         </field>
@@ -233,14 +231,8 @@
         <field name="name">Insurance Plans</field>
         <field name="res_model">clinic.insurance</field>
         <field name="view_mode">tree,form</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                Add an insurance plan
-            </p>
-            <p>
-                Manage patient insurance plans and coverage details.
-            </p>
-        </field>
+        <field name="search_view_id" ref="view_clinic_insurance_search"/>
+        <field name="context">{'search_default_active': 1}</field>
     </record>
     
     <record id="action_clinic_insurance_claim" model="ir.actions.act_window">
@@ -248,13 +240,12 @@
         <field name="res_model">clinic.insurance.claim</field>
         <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="view_clinic_insurance_claim_search"/>
-        <field name="context">{'search_default_submitted': 1}</field>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">
-                Create an insurance claim
+                No insurance claims found!
             </p>
             <p>
-                Process and track insurance claims for treatments.
+                Insurance claims are automatically created when treatments are completed for insured patients.
             </p>
         </field>
     </record>

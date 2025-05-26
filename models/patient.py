@@ -64,7 +64,7 @@ class ClinicPatient(models.Model):
     attachment_ids = fields.One2many('ir.attachment', 'res_id', 
                                    domain=[('res_model', '=', 'clinic.patient')],
                                    string='Medical Documents')
-    partner_id = fields.Many2one('res.partner', string='Related Partner')
+    partner_id = fields.Many2one('res.partner', string='Related Partner', ondelete='cascade')
     
     # Statistics
     appointment_count = fields.Integer(compute='_compute_counts')
@@ -122,7 +122,49 @@ class ClinicPatient(models.Model):
         for vals in vals_list:
             if vals.get('patient_code', 'New') == 'New':
                 vals['patient_code'] = self.env['ir.sequence'].next_by_code('clinic.patient') or 'New'
+            
+            # Create corresponding partner if not specified
+            if not vals.get('partner_id'):
+                partner_vals = {
+                    'name': f"{vals.get('first_name', '')} {vals.get('last_name', '')}".strip(),
+                    'phone': vals.get('phone'),
+                    'mobile': vals.get('mobile'),
+                    'email': vals.get('email'),
+                    'street': vals.get('street'),
+                    'street2': vals.get('street2'),
+                    'city': vals.get('city'),
+                    'state_id': vals.get('state_id'),
+                    'country_id': vals.get('country_id'),
+                    'zip': vals.get('zip'),
+                    'is_company': False,
+                    'partner_share': True,
+                    'company_id': vals.get('company_id', self.env.company.id),
+                }
+                partner = self.env['res.partner'].create(partner_vals)
+                vals['partner_id'] = partner.id
+                
         return super().create(vals_list)
+    
+    def write(self, vals):
+        # Update partner information when patient info changes
+        res = super().write(vals)
+        
+        if any(field in vals for field in ['first_name', 'last_name', 'phone', 'mobile', 
+                                           'email', 'street', 'street2', 'city', 
+                                           'state_id', 'country_id', 'zip']):
+            for rec in self:
+                if rec.partner_id:
+                    partner_vals = {}
+                    if 'first_name' in vals or 'last_name' in vals:
+                        partner_vals['name'] = rec.full_name
+                    for field in ['phone', 'mobile', 'email', 'street', 'street2', 
+                                 'city', 'state_id', 'country_id', 'zip']:
+                        if field in vals:
+                            partner_vals[field] = vals[field]
+                    if partner_vals:
+                        rec.partner_id.write(partner_vals)
+        
+        return res
     
     def action_view_appointments(self):
         return {
